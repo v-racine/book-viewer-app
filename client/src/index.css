@@ -482,7 +482,8 @@ th {
 }
 .pure-button-active,
 .pure-button:active {
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset,
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.15) inset,
     0 0 6px rgba(0, 0, 0, 0.2) inset;
   border-color: #000\9;
 }
@@ -978,7 +979,9 @@ a.pure-button-selected {
 }
 .pure-table caption {
   color: #000;
-  font: italic 85%/1 arial, sans-serif;
+  font:
+    italic 85%/1 arial,
+    sans-serif;
   padding: 1em 0;
   text-align: center;
 }
@@ -1272,4 +1275,18 @@ Hides the menu at `48em`, but modify this based on your app's needs.
     position: relative;
     left: 320px;
   }
+}
+
+/* Always show the sidebar */
+#menu {
+  left: 0;
+  margin-left: 0;
+}
+
+#layout {
+  padding-left: 320px;
+}
+
+.menu-link {
+  display: none;
 }

@@ -13,51 +13,51 @@ function App() {
   useEffect(() => {
     fetch("/api/toc")
       .then((res) => {
-        if (!res.ok) {
+        if (!res.ok)
           throw new Error(
             `Failed to load table of contents. Status: ${res.status}`,
           );
-        }
         return res.json();
       })
       .then((data) => setToc(data))
-      .catch((error) => setTocError(error.message));
+      .catch((err) => setTocError(err.message));
   }, []);
 
   useEffect(() => {
     if (!selectedChapter) return;
     setChapterError(null);
-
+    setChapterContent(null);
     const urlParam = selectedChapter.toLowerCase().replaceAll(" ", "-");
+
     fetch(`/api/${urlParam}`)
       .then((res) => {
-        if (!res.ok) {
+        if (!res.ok)
           throw new Error(`Failed to load chapter. Status: ${res.status}`);
-        }
         return res.text();
       })
       .then((data) => setChapterContent(data))
-      .catch((error) => setChapterError(error.message));
+      .catch((err) => setChapterError(err.message));
   }, [selectedChapter]);
 
   if (tocError) return <p>Error: {tocError}</p>;
 
   return (
-    <div id="app">
-      <h1>{toc?.book ?? "Loading..."}</h1>
-      {selectedChapter ? (
+    <div id="layout">
+      <TableOfContents
+        toc={toc}
+        selectedChapter={selectedChapter}
+        onSelectChapter={setSelectedChapter}
+      />
+      <div className="content">
+        <div className="header">
+          <h1>{toc?.book ?? "Loading..."}</h1>
+        </div>
         <ChapterView
           chapter={selectedChapter}
           content={chapterContent}
           error={chapterError}
-          onBack={() => {
-            setSelectedChapter(null);
-            setChapterContent(null);
-          }}
         />
-      ) : (
-        <TableOfContents toc={toc} onSelectChapter={setSelectedChapter} />
-      )}
+      </div>
     </div>
   );
 }
