@@ -21,7 +21,7 @@ function App() {
         return res.json();
       })
       .then((data) => setToc(data))
-      .catch((error) => setTocError(error));
+      .catch((error) => setTocError(error.message));
   }, []);
 
   useEffect(() => {
