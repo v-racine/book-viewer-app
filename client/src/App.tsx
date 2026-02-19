@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import type { TableOfContents as TOCType } from "./types";
+import TableOfContents from "./components/TableOfContents";
+import ChapterView from "./components/ChapterView";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [toc, setToc] = useState<TOCType | null>(null);
+  const [selectedChapter, setSelectedChapter] = useState<string | null>(null);
+  const [chapterContent, setChapterContent] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/toc")
+      .then((res) => res.json())
+      .then((data) => setToc(data));
+  }, []);
+
+  useEffect(() => {
+    if (!selectedChapter) return;
+    const urlParam = selectedChapter.toLowerCase().replaceAll(" ", "-");
+    fetch(`/api/${urlParam}`)
+      .then((res) => res.text())
+      .then((data) => setChapterContent(data));
+  }, [selectedChapter]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div id="app">
+      <h1>{toc?.book ?? "Loading..."}</h1>
+      {selectedChapter ? (
+        <ChapterView
+          chapter={selectedChapter}
+          content={chapterContent}
+          onBack={() => {
+            setSelectedChapter(null);
+            setChapterContent(null);
+          }}
+        />
+      ) : (
+        <TableOfContents toc={toc} onSelectChapter={setSelectedChapter} />
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
