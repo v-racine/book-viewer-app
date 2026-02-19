@@ -1,22 +1,21 @@
 interface Props {
-  chapter: string;
+  chapter: string | null;
   content: string | null;
   error: string | null;
-  onBack: () => void;
 }
 
-function ChapterView({ chapter, content, error, onBack }: Props) {
+function ChapterView({ chapter, content, error }: Props) {
+  if (!chapter)
+    return (
+      <p className="content-subhead">Select a chapter to begin reading.</p>
+    );
+
+  if (error) return <p>Error: {error}</p>;
+
   return (
-    <div className="chapter">
-      <button onClick={onBack}>← Back to Table of Contents</button>
-      <h2>{chapter}</h2>
-      {error ? (
-        <p>Error: {error}</p>
-      ) : content ? (
-        <pre>{content}</pre>
-      ) : (
-        <p>Loading...</p>
-      )}
+    <div>
+      <h2 className="content-subhead">{chapter}</h2>
+      {content ? <pre>{content}</pre> : <p>Loading...</p>}
     </div>
   );
 }
