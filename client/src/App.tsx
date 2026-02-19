@@ -10,16 +10,30 @@ function App() {
 
   useEffect(() => {
     fetch("/api/toc")
-      .then((res) => res.json())
-      .then((data) => setToc(data));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => setToc(data))
+      .catch((error) => console.error("Error fetching TOC:", error));
   }, []);
 
   useEffect(() => {
     if (!selectedChapter) return;
     const urlParam = selectedChapter.toLowerCase().replaceAll(" ", "-");
     fetch(`/api/${urlParam}`)
-      .then((res) => res.text())
-      .then((data) => setChapterContent(data));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.text();
+      })
+      .then((data) => setChapterContent(data))
+      .catch((error) =>
+        console.error(`Error fetching chapter ${selectedChapter}:`, error),
+      );
   }, [selectedChapter]);
 
   return (
