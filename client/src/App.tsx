@@ -10,6 +10,8 @@ function App() {
   const [tocError, setTocError] = useState<string | null>(null);
   const [chapterError, setChapterError] = useState<string | null>(null);
 
+  console.log(toc);
+
   useEffect(() => {
     fetch("/api/toc")
       .then((res) => {
